@@ -34,7 +34,9 @@ jobs:
         run: |
           lit auth "Richy-Z" "Richard Ziupsnys" "hello@richy.lol"
 
-      - name: Add and Publish to Lit
+      - name: Add and Publish each package to Lit
         run: |
-          lit add base32.lua
-          lit publish base32.lua
+          for file in src/*.lua; do
+            lit add "$file"
+            lit publish "$file" || echo "skipping $file (lit exited with error code - no changes or already published)"
+          done
