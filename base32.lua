@@ -2,10 +2,10 @@
     name = "Richy-Z/base32"
     version = "0.1.2"
     dependencies = {}
-    description = "Base32 implementation in pure Lua"
+    description = "Base32 implementation for Luvit"
     tags = { "base32", "rfc4648", "encoding", "decoding" }
-    license = "Apache License 2.0"
-    author = { name = "Richy Z", email = "64844585+Richy-Z@users.noreply.github.com" }
+    license = "Apache 2"
+    author = { name = "Richard Ziupsnys", email = "hello@richy.lol" }
     homepage = "https://github.com/Richy-Z/base32"
   ]]
 
@@ -26,6 +26,8 @@ local concat = table.concat
 local rep = string.rep
 local char = string.char
 
+-- "Implementations MUST include appropriate pad characters..."
+-- omitted optional padding argument, but otherwise here and working if required
 local function encode(str --[[, padding]])
     local output = {}
     local buffer = 0
@@ -117,6 +119,7 @@ local _testDecoded = decode(_testEncoded)
 assert(_testDecoded == _testStr)
 assert(encode(_testDecoded) == _testEncoded)
 
+-- export
 return {
     encode = encode,
     decode = decode
