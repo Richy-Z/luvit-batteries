@@ -35,6 +35,11 @@ return function()
         return str:match("^%s*(.-)%s*$")
     end
 
+    function string.zfill(str, width)
+        str = tostring(str)
+        return string.rep("0", width - #str) .. str
+    end
+
     function string.split(input, separator)
         if separator == nil then
             separator = "%s"
