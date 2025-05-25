@@ -1,5 +1,7 @@
 # `Richy-Z/base32`
 
+[![Publish to Lit](https://github.com/Richy-Z/base32/actions/workflows/lit.yml/badge.svg)](https://github.com/Richy-Z/base32/actions/workflows/lit.yml)
+
 A base32 implementation made in pure Lua which is fully compliant with [RFC 4648](https://datatracker.ietf.org/doc/html/rfc4648).
 
 ## Installation
