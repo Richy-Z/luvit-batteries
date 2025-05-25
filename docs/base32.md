@@ -1,24 +1,46 @@
 # `Richy-Z/base32`
 
-A base32 implementation made in pure Lua which is fully compliant with [RFC 4648](https://datatracker.ietf.org/doc/html/rfc4648).
+An [RFC 4648](https://datatracker.ietf.org/doc/html/rfc4648)-compliant Base32 encoder/decoder in pure Lua.
 
-## Installation
+Fully strips whitespace and padding on decode, and emits padding during encoding for standard compliance.
 
-You can install this little library using `lit`:
-
-```sh
-lit install Richy-Z/base32
-```
-
-## Using base32
-
-Require the library and use one of two methods: `encode` or `decode`.
+##  Usage
 
 ```lua
 local base32 = require("base32")
+```
 
-local encoded = base32.encode("Numelon Ltd. <3 Luvit")
-local decoded = base32.decode("NZ2W2ZLMN5XCAPBTEBWHK5TJOQ======")
+---
 
-assert(encoded == decoded)
+### `base32.encode(str)`
+
+Encodes a string into Base32 according to [RFC 4648](https://datatracker.ietf.org/doc/html/rfc4648).
+
+- Padding with `=` is always added, as per the specification.
+- Case is always uppercased.
+- Output is a plain string.
+
+```lua
+print(base32.encode("foobar")) -- MZXW6YTBOI======
+
+assert(encode("foobar") == "MZXW6YTBOI======")
+```
+
+###  `base32.decode(str)`
+
+Decodes a Base32 string into its original content.
+
+- Whitespace and padding are stripped automatically from the input string.
+- Returns `nil, error` if invalid Base32 characters are encountered.
+
+```lua
+print(base32.decode("MZXW6YTBOI======")) -- foobar
+
+print(base32.decode("MZXW6 YT B O I======")) -- foobar
+
+assert(decode("M  ZX W6Y    TBOI======") == "foobar")
+
+local ok, err = base32.decode("??")
+assert(not ok)
+print(err) -- Invalid base32 character: ?
 ```
