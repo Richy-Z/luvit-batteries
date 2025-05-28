@@ -1,6 +1,6 @@
 --[[lit-meta
     name = "Richy-Z/logger"
-    version = "1.0.3"
+    version = "1.0.4"
     dependencies = {"luvit/fs"}
     description = "A lightweight per-instance logging utility"
     tags = { "logger", "logs", "logging", "stdout", "error" }
