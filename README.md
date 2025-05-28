@@ -19,6 +19,7 @@ These libraries are available as standalone Luvit-compatible packages via [Lit](
 | `Richy-Z/base32`     | RFC 4648-compliant Base32 implementation in pure Lua | `lit install Richy-Z/base32`| [Here](./docs/base32.md) |
 | `Richy-Z/clock`     | Precise UNIX time util with ISO 8601 support, millisecond precision, and UTC-safe parsing | `lit install Richy-Z/clock` | [Here](./docs/clock.md) |
 | `Richy-Z/string-extensions` | Small extensions to Lua's default string library | `lit install Richy-Z/string-extensions` | [Here](./docs/string-extensions.md) |
+| `Richy-Z/logger` | A lightweight per-instance logging utility | `lit install Richy-Z/logger` | [Here](./docs/logger.md) |
 
 ---
 

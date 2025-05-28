@@ -35,6 +35,17 @@ Strips leading and trailing whitespace from a string.
 print(string.trim("   padded string   ")) -- "padded string"
 ```
 
+###  `string.zfill(str, width)`
+
+Pads the string on the left with zeroes (`0`) until it reaches the specified width.
+
+If the string is already at least `width` characters long, it is returned unchanged.
+
+```lua
+print(string.zfill("42", 5)) -- "00042"
+print(string.zfill("hello", 3)) -- "hello" -- not padded because it is already >= 3 chars
+```
+
 ### `string.split(str, separator?)`
 
 Splits a string by a pattern-based separator (defaults to `%s`, i.e. any whitespace).
