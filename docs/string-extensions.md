@@ -107,7 +107,7 @@ print(string.random(10)) -- e.g. "aZ7qT19BcP"
 print(string.random(5, "abc")) -- e.g. "abacb"
 ```
 
-###  `string.levenshtein(first, second)`
+<!-- ###  `string.levenshtein(first, second)`
 
 Returns the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) between two strings - the minimum number of edits (insertions, deletions, or subtitutions) required to transform the `first` string into the `second` string.
 
@@ -122,4 +122,4 @@ print(string.levenshtein("cat", "cut"))        -- 1
 print(string.levenshtein("banana", "banana"))  -- 0
 ```
 
-The function internally builds a distance matrix that tracks how much "effort" it takes to align each character of `first` with each character of `second`. Every mismatch adds a penalty (`+1`), unless the characters match (in which case it is `+0`). The bottom-right cell of the matrix (table) holds the final answer, which is the total number of edits needed.
+The function internally builds a distance matrix that tracks how much "effort" it takes to align each character of `first` with each character of `second`. Every mismatch adds a penalty (`+1`), unless the characters match (in which case it is `+0`). The bottom-right cell of the matrix (table) holds the final answer, which is the total number of edits needed. -->

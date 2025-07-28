@@ -1,6 +1,6 @@
 --[[lit-meta
     name = "Richy-Z/string-extensions"
-    version = "0.2.0"
+    version = "0.2.1"
     dependencies = {}
     description = "Small extensions to Lua's default string library"
     tags = { "strings", "split", "regex", "random" }
@@ -215,6 +215,9 @@ function string.random(length, charset)
     return r
 end
 
+-- okay, so somehow i didnt even notice that Luvit already has string.levenshtein
+--[[
+
 -- Returns the [Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance) between two strings - the minimum number of edits (insertions, deletions, or subtitutions) required to transform the `first` string into the `second` string.
 --
 -- This is useful for fuzzy matching, typo tolerance, and somewhat measuring similarity between two strings.
@@ -259,6 +262,8 @@ function string.levenshtein(first, second)
 
     return matrix[len1][len2]
 end
+
+]]
 
 -- for legacy compatibility to not break old scripts which rely on running this as a function instead of plain requiring
 return function() end
