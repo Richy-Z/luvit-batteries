@@ -5,9 +5,11 @@ A set of lightweight extensions to Lua's default string library. These functions
 ## Usage
 
 ```lua
-require("string-extensions")()
+require("string-extensions")
 -- all functions are now available as part of the global string table
 ```
+
+Previously, the library had to be "activated" by requiring and then running the function it returned like this: `require("string-extensions")()`. This is no longer required, however the module still returns an empty function to maintain compatibility with legacy scripts that still rely on running it.
 
 ---
 
@@ -63,7 +65,7 @@ p(string.split("Hi.Bob,And.3.,44", ".,"))
 
 ###  `string.splitphrase(str, separator?)`
 
-Splits a string by a literal separator (defaults to whitespace). Unlike `string.split()`, the full string you provide is treated as the exact separator - not a pattern and not a set of characters.
+Splits a string by a literal separator (defaults to whitespace). Unlike `string.split`, the full string you provide is treated as the exact separator - not a pattern and not a set of characters.
 
 ```lua
 p(string.splitphrase("Hi.Bob,And.3.,44", ".,"))
@@ -75,7 +77,7 @@ p(string.splitphrase("Hi.Bob,And.3.,44", ".,"))
 
 ### `string.wrap(str, limit?)`
 
-Wraps long strings at a given character limit (default: `80`), ensuring words aren't broken across lines.
+Wraps long strings at a given character limit (default: `80`) whilst also ensuring that words aren't broken across lines.
 
 ```lua
 print(string.wrap("This sentence is being wrapped after 20 characters", 20))
@@ -88,7 +90,7 @@ being wrapped after
 
 ### `string.deregexify(str)`
 
-Escapes all Lua pattern characters in a string so it can be safely used in `string.match`, `string.gsub`, etc.
+Escapes all Lua pattern characters in a string so it can be safely used in `string.match`, `string.gsub`, etc. without being interpreted as actual pattern characters.
 
 ```lua
 local escaped = string.deregexify("1+1=2?")
@@ -97,7 +99,7 @@ print(escaped) -- "1%+1=2%?"
 
 ###  `string.random(length, charset?)`
 
-Generates a random string of length using the given charset (or alphanumerics by default).
+Generates a random string that is `length` characters long, using the given charset (or alphanumerics by default, if `charset` is omitted.)
 
 ```lua
 print(string.random(10)) -- e.g. "aZ7qT19BcP"

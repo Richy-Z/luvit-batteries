@@ -31,7 +31,7 @@ assert(encode("foobar") == "MZXW6YTBOI======")
 Decodes a Base32 string into its original content.
 
 - Whitespace and padding are stripped automatically from the input string.
-- Returns `nil, error` if invalid Base32 characters are encountered.
+- Returns `nil, errorStr` if invalid Base32 characters are encountered.
 
 ```lua
 print(base32.decode("MZXW6YTBOI======")) -- foobar

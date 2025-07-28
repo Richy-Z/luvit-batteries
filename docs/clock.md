@@ -20,7 +20,7 @@ local clock = require("clock")
 
 - Alias: `clock.now()`
 
-Returns the current UNIX time in seconds with fractional milliseconds using the OS’ native time function via FFI.
+Returns the current UNIX time in seconds with fractional milliseconds using the OS' native time function via FFI.
 
 ```lua
 local currentTime = clock.epoch()
@@ -38,9 +38,9 @@ local currentMillis = clock.milliseconds()
 print(currentMillis) -- 1748187535644
 ```
 
-###  `clock.iso8601()`
+###  `clock.iso8601(t?)`
 
-Returns the current time in ISO 8601 format (UTC), including milliseconds (e.g., 2025-05-27T23:45:12.123Z).
+Returns the current time or optional `t` in ISO 8601 format (UTC), including milliseconds (e.g., 2025-05-27T23:45:12.123Z).
 
 ```lua
 local currentIso = clock.iso8601()
@@ -59,4 +59,16 @@ local parsed = clock.iso8601_parse(example)
 print(parsed) -- 1748389512.123
 
 assert(math.floor(iso8601_parse("2025-05-27T23:45:12.123Z")) == 1748389512)
+```
+
+### `clock.prettyTime(seconds)`
+
+Returns a "pretty" string where the `seconds` provided are made into an actual sentence.
+
+Yes, of course it uses the Oxford comma before an "and".
+
+```lua
+local sentence = clock.prettyTime(1000)
+
+print(sentence) -- "16 minutes, and 40 seconds"
 ```
