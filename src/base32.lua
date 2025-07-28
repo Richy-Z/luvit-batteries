@@ -1,6 +1,6 @@
 --[[lit-meta
     name = "Richy-Z/base32"
-    version = "0.1.4"
+    version = "0.1.5"
     dependencies = {}
     description = "Base32 implementation for Luvit"
     tags = { "base32", "rfc4648", "encoding", "decoding" }
