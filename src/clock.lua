@@ -1,6 +1,6 @@
 --[[lit-meta
     name = "Richy-Z/clock"
-    version = "0.3.0"
+    version = "0.3.1"
     dependencies = {}
     description = "A simple library to get precise UNIX time and other utility functions"
     tags = { "clock", "time", "unix", "iso8601", "timestamp", "ffi", "milliseconds" }
@@ -93,7 +93,7 @@ local function iso8601(t)
         date.year, date.month, date.day, date.hour, date.min, date.sec, millis)
 end
 
---- Parses `str`, hopefully an ISO 8601 formatted timestamp, back into a UNIX timestamp in seconds with fractional milliseconds (if present). Assumes UTC and accounts for local timezones automatically.
+--- Parses `str`, hopefully an ISO 8601 formatted timestamp, back into a UNIX timestamp in seconds with fractional milliseconds (if present).
 ---
 --- ```lua
 --- local example = "2025-05-27T23:45:12.123Z"
@@ -111,7 +111,7 @@ local function iso8601_parse(str)
         "(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)%.(%d+)Z"
     )
 
-    if not year then -- fallback without milliseconds
+    if not year then
         year, month, day, hour, min, sec = str:match(
             "(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)Z"
         )
@@ -129,16 +129,19 @@ local function iso8601_parse(str)
         hour = tonumber(hour),
         min = tonumber(min),
         sec = tonumber(sec),
-        isdst = false, -- avoids daylight saving time offset errors etc
     }
 
-    -- force UTC interpretation
-    -- forgetting to implement UTC support was a costly mistake..
-    local localtime = time(t)
-    local offset = difftime(time(date("!*t", localtime)), localtime) ---@diagnostic disable-line: param-type-mismatch
-    local utcTime = localtime + offset
+    -- interpret as UTC
+    local local_ts = os.time(t)
+    local utc_table = os.date("!*t", local_ts)
+    local local_table = os.date("*t", local_ts)
 
-    return utcTime + tonumber(millis) / 1000
+    local offset = os.difftime(
+        os.time(local_table),
+        os.time(utc_table)
+    )
+
+    return local_ts + offset + tonumber(millis) / 1000
 end
 
 -- tests
