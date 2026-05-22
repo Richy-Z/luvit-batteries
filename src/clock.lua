@@ -1,6 +1,6 @@
 --[[lit-meta
     name = "Richy-Z/clock"
-    version = "0.3.1"
+    version = "0.3.2"
     dependencies = {}
     description = "A simple library to get precise UNIX time and other utility functions"
     tags = { "clock", "time", "unix", "iso8601", "timestamp", "ffi", "milliseconds" }
