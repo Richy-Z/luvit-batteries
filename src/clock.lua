@@ -50,15 +50,15 @@ ffi.cdef [[
 --- ```
 ---@return integer
 local function epoch()
-    local timespec = ffi.new("struct timespec")
-    local CLOCK_REALTIME = ffi.C.CLOCK_REALTIME
+	local timespec = ffi.new("struct timespec")
+	local CLOCK_REALTIME = ffi.C.CLOCK_REALTIME
 
-    if ffi.C.clock_gettime(CLOCK_REALTIME, timespec) ~= 0 then
-        return 0
-    end
+	if ffi.C.clock_gettime(CLOCK_REALTIME, timespec) ~= 0 then
+		return 0
+	end
 
-    -- calculate time in sec with fractional milliseconds
-    return tonumber(timespec.tv_sec) + tonumber(timespec.tv_nsec) / 1e9
+	-- calculate time in sec with fractional milliseconds
+	return tonumber(timespec.tv_sec) + tonumber(timespec.tv_nsec) / 1e9
 end
 
 --- Uses `clock.epoch()` to give you the current UNIX time in milliseconds. It is a simple wrapper that just multiplies the result of `clock.epoch()` by 1000.
@@ -70,7 +70,7 @@ end
 --- ```
 ---@return integer
 local function milliseconds()
-    return epoch() * 1000
+	return epoch() * 1000
 end
 
 --- Returns the current time or optional `t` in ISO 8601 format (UTC), including milliseconds (e.g., 2025-05-27T23:45:12.123Z).
@@ -83,14 +83,25 @@ end
 ---@param t? number
 ---@return string
 local function iso8601(t)
-    t = t or epoch()
+	t = t or epoch()
 
-    local seconds = floor(t)
-    local millis = floor((t - seconds) * 1000)
+	local seconds = floor(t)
+	local millis = floor((t - seconds) * 1000)
 
-    local date = date("!*t", seconds)
-    return fmt("%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
-        date.year, date.month, date.day, date.hour, date.min, date.sec, millis)
+	local date = date("!*t", seconds)
+	return fmt("%04d-%02d-%02dT%02d:%02d:%02d.%03dZ",
+		date.year, date.month, date.day, date.hour, date.min, date.sec, millis)
+end
+
+local function days_from_civil(y, m, d)
+	y = y - (m <= 2 and 1 or 0)
+
+	local era = floor((y >= 0 and y or y - 399) / 400)
+	local yoe = y - era * 400
+	local doy = floor((153 * (m + (m > 2 and -3 or 9)) + 2) / 5) + d - 1
+	local doe = yoe * 365 + floor(yoe / 4) - floor(yoe / 100) + doy
+
+	return era * 146097 + doe - 719468
 end
 
 --- Parses `str`, hopefully an ISO 8601 formatted timestamp, back into a UNIX timestamp in seconds with fractional milliseconds (if present).
@@ -107,41 +118,39 @@ end
 ---@return number?
 ---@return string?
 local function iso8601_parse(str)
-    local year, month, day, hour, min, sec, millis = str:match(
-        "(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)%.(%d+)Z"
-    )
+	local year, month, day, hour, min, sec, frac = str:match(
+		"^(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)%.(%d+)Z$"
+	)
 
-    if not year then
-        year, month, day, hour, min, sec = str:match(
-            "(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)Z"
-        )
-        millis = 0
-    end
+	if not year then
+		year, month, day, hour, min, sec = str:match(
+			"^(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)Z$"
+		)
+		frac = nil
+	end
 
-    if not year then
-        return nil, "Invalid ISO 8601 format"
-    end
+	if not year then
+		return nil, "Invalid ISO 8601 format"
+	end
 
-    local t = {
-        year = tonumber(year),
-        month = tonumber(month),
-        day = tonumber(day),
-        hour = tonumber(hour),
-        min = tonumber(min),
-        sec = tonumber(sec),
-    }
+	year = tonumber(year)
+	month = tonumber(month)
+	day = tonumber(day)
+	hour = tonumber(hour)
+	min = tonumber(min)
+	sec = tonumber(sec)
 
-    -- interpret as UTC
-    local local_ts = os.time(t)
-    local utc_table = os.date("!*t", local_ts)
-    local local_table = os.date("*t", local_ts)
+	local timestamp =
+		days_from_civil(year, month, day) * 86400 +
+		hour * 3600 +
+		min * 60 +
+		sec
 
-    local offset = os.difftime(
-        os.time(local_table),
-        os.time(utc_table)
-    )
+	if frac then
+		timestamp = timestamp + tonumber("0." .. frac)
+	end
 
-    return local_ts + offset + tonumber(millis) / 1000
+	return timestamp
 end
 
 -- tests
@@ -149,12 +158,12 @@ assert(floor(iso8601_parse("2025-05-27T23:45:12.123Z")) == 1748389512) ---@diagn
 -- p(iso8601_parse("2025-05-27T23:45:12.123Z"))
 
 local _timeUnits = {
-    { name = "year",   seconds = 365 * 24 * 60 * 60 },
-    { name = "month",  seconds = 30 * 24 * 60 * 60 },
-    { name = "day",    seconds = 24 * 60 * 60 },
-    { name = "hour",   seconds = 60 * 60 },
-    { name = "minute", seconds = 60 },
-    { name = "second", seconds = 1 },
+	{ name = "year",   seconds = 365 * 24 * 60 * 60 },
+	{ name = "month",  seconds = 30 * 24 * 60 * 60 },
+	{ name = "day",    seconds = 24 * 60 * 60 },
+	{ name = "hour",   seconds = 60 * 60 },
+	{ name = "minute", seconds = 60 },
+	{ name = "second", seconds = 1 },
 }
 
 --- Returns a "pretty" string where the `seconds` provided are made into an actual sentence.
@@ -169,34 +178,34 @@ local _timeUnits = {
 ---@param seconds number Time in seconds
 ---@return string
 local function prettyTime(seconds)
-    local result = {}
+	local result = {}
 
-    for _, unit in ipairs(_timeUnits) do
-        if seconds >= unit.seconds then
-            local value = floor(seconds / unit.seconds)
-            seconds = seconds % unit.seconds
-            insert(result, value .. " " .. unit.name .. (value > 1 and "s" or ""))
-        end
-    end
+	for _, unit in ipairs(_timeUnits) do
+		if seconds >= unit.seconds then
+			local value = floor(seconds / unit.seconds)
+			seconds = seconds % unit.seconds
+			insert(result, value .. " " .. unit.name .. (value > 1 and "s" or ""))
+		end
+	end
 
-    if #result == 0 then
-        return "0 seconds"
-    elseif #result == 1 then
-        return result[1]
-    else
-        local last = remove(result)
-        return concat(result, ", ") .. ", and " .. last
-    end
+	if #result == 0 then
+		return "0 seconds"
+	elseif #result == 1 then
+		return result[1]
+	else
+		local last = remove(result)
+		return concat(result, ", ") .. ", and " .. last
+	end
 end
 
 return {
-    epoch = epoch,
-    now = epoch, -- alias for epoch
+	epoch = epoch,
+	now = epoch, -- alias for epoch
 
-    milliseconds = milliseconds,
+	milliseconds = milliseconds,
 
-    iso8601 = iso8601,
-    iso8601_parse = iso8601_parse,
+	iso8601 = iso8601,
+	iso8601_parse = iso8601_parse,
 
-    prettyTime = prettyTime
+	prettyTime = prettyTime
 }
